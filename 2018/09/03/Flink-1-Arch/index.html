@@ -79,13 +79,23 @@
 
 
 
-<meta property="og:type" content="website">
+<meta name="description" content="Flink 原理与实现：架构和拓扑概览要了解一个系统，一般都是从架构开始。我们关心的问题是：系统部署成功后各个节点都启动了哪些服务，各个服务之间又是怎么交互和协调的。下方是 Flink 集群启动后架构图。 当 Flink 集群启动后，首先会启动一个 JobManger 和一个或多个的 TaskManager。由 Client 提交任务给 JobManager，JobManager 再调度任务到各个">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Xavier&#39;s Lab">
-<meta property="og:url" content="http://blog.daas.ai/index.html">
+<meta property="og:url" content="http://blog.daas.ai/2018/09/03/Flink-1-Arch/index.html">
 <meta property="og:site_name" content="Xavier&#39;s Lab">
+<meta property="og:description" content="Flink 原理与实现：架构和拓扑概览要了解一个系统，一般都是从架构开始。我们关心的问题是：系统部署成功后各个节点都启动了哪些服务，各个服务之间又是怎么交互和协调的。下方是 Flink 集群启动后架构图。 当 Flink 集群启动后，首先会启动一个 JobManger 和一个或多个的 TaskManager。由 Client 提交任务给 JobManager，JobManager 再调度任务到各个">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://blog.daas.ai/2018/09/03/Flink-1-Arch/Flink-1-Arch/TB1ObBnJFXXXXXtXVXXXXXXXXXX.jpeg">
+<meta property="og:image" content="http://blog.daas.ai/2018/09/03/Flink-1-Arch/Flink-1-Arch/TB1vB1uJFXXXXbaXpXXXXXXXXXX.jpeg">
+<meta property="og:image" content="http://blog.daas.ai/2018/09/03/Flink-1-Arch/Flink-1-Arch/TB1QKR2JFXXXXbyaXXXXXXXXXXX.jpeg">
+<meta property="og:image" content="http://blog.daas.ai/2018/09/03/Flink-1-Arch/Flink-1-Arch/TB1tA_GJFXXXXapXFXXXXXXXXXX.jpeg">
+<meta property="og:image" content="http://blog.daas.ai/2018/09/03/Flink-1-Arch/Flink-1-Arch/TB1qmtpJVXXXXagXXXXXXXXXXXX.jpeg">
+<meta property="og:updated_time" content="2018-09-03T12:51:49.165Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Xavier&#39;s Lab">
+<meta name="twitter:description" content="Flink 原理与实现：架构和拓扑概览要了解一个系统，一般都是从架构开始。我们关心的问题是：系统部署成功后各个节点都启动了哪些服务，各个服务之间又是怎么交互和协调的。下方是 Flink 集群启动后架构图。 当 Flink 集群启动后，首先会启动一个 JobManger 和一个或多个的 TaskManager。由 Client 提交任务给 JobManager，JobManager 再调度任务到各个">
+<meta name="twitter:image" content="http://blog.daas.ai/2018/09/03/Flink-1-Arch/Flink-1-Arch/TB1ObBnJFXXXXXtXVXXXXXXXXXX.jpeg">
 
 
 
@@ -115,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="http://blog.daas.ai/"/>
+  <link rel="canonical" href="http://blog.daas.ai/2018/09/03/Flink-1-Arch/"/>
 
 
 
 
 
-  <title>Xavier's Lab</title>
+  <title> | Xavier's Lab</title>
   
 
 
@@ -140,8 +150,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -214,9 +223,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -246,9 +255,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/03/Flink-1-Arch/" itemprop="url">Untitled</a></h1>
+          <h1 class="post-title" itemprop="name headline"></h1>
         
 
         <div class="post-meta">
@@ -298,9 +305,7 @@
       
 
       
-        
-          
-            <h1 id="Flink-原理与实现：架构和拓扑概览"><a href="#Flink-原理与实现：架构和拓扑概览" class="headerlink" title="Flink 原理与实现：架构和拓扑概览"></a>Flink 原理与实现：架构和拓扑概览</h1><p>要了解一个系统，一般都是从架构开始。我们关心的问题是：系统部署成功后各个节点都启动了哪些服务，各个服务之间又是怎么交互和协调的。下方是 Flink 集群启动后架构图。</p>
+        <h1 id="Flink-原理与实现：架构和拓扑概览"><a href="#Flink-原理与实现：架构和拓扑概览" class="headerlink" title="Flink 原理与实现：架构和拓扑概览"></a>Flink 原理与实现：架构和拓扑概览</h1><p>要了解一个系统，一般都是从架构开始。我们关心的问题是：系统部署成功后各个节点都启动了哪些服务，各个服务之间又是怎么交互和协调的。下方是 Flink 集群启动后架构图。</p>
 <p><img src="Flink-1-Arch/TB1ObBnJFXXXXXtXVXXXXXXXXXX.jpeg" alt=""><br>当 Flink 集群启动后，首先会启动一个 JobManger 和一个或多个的 TaskManager。由 Client 提交任务给 JobManager，JobManager 再调度任务到各个 TaskManager 去执行，然后 TaskManager 将心跳和统计信息汇报给 JobManager。TaskManager 之间以流的形式进行数据的传输。上述三者均为独立的 JVM 进程。</p>
 <ul>
 <li><strong>Client</strong> 为提交 Job 的客户端，可以是运行在任何机器上（与 JobManager 环境连通即可）。提交 Job 后，Client 可以结束进程（Streaming的任务），也可以不结束并等待结果返回。</li>
@@ -377,8 +382,6 @@
 </ol>
 <p><a href="http://wuchong.me/blog/2016/05/03/flink-internals-overview/" target="_blank" rel="noopener">Flink 原理与实现：架构和拓扑概览</a></p>
 
-          
-        
       
     </div>
     
@@ -395,134 +398,28 @@
       
 
       
-
-      
-
       
       
-        <div class="post-eof"></div>
+
       
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.daas.ai/2018/08/29/blog-init/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xavier ma">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xavier's Lab">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/29/blog-init/" itemprop="url">blog init</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-29T21:00:35+08:00">
-                2018-08-29
-              </time>
+              <a href="/2018/08/29/blog-init/" rel="next" title="blog init">
+                <i class="fa fa-chevron-left"></i> blog init
+              </a>
             
+          </div>
 
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
             
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-            <h1 id="Thx-Hexo-and-NexT"><a href="#Thx-Hexo-and-NexT" class="headerlink" title="Thx Hexo and NexT !"></a>Thx Hexo and NexT !</h1><blockquote>
-<p>痛苦+反思=进步</p>
-</blockquote>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -532,10 +429,11 @@
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -543,6 +441,10 @@
 
 
           
+
+  
+
+
 
         </div>
         
@@ -563,8 +465,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -606,6 +517,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Flink-原理与实现：架构和拓扑概览"><span class="nav-number">1.</span> <span class="nav-text">Flink 原理与实现：架构和拓扑概览</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Job-例子"><span class="nav-number">1.1.</span> <span class="nav-text">Job 例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Graph"><span class="nav-number">1.2.</span> <span class="nav-text">Graph</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -746,6 +673,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
