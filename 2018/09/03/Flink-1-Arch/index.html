@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="flink,大数据,流式计算," />
+  <meta name="keywords" content="flink,流式计算," />
 
 
 
@@ -79,23 +79,23 @@
 
 
 
-<meta name="description" content="整体架构要了解一个系统，一般都是从架构开始。我们关心的问题是：系统部署成功后各个节点都启动了哪些服务，各个服务之间又是怎么交互和协调的。下方是 Flink 集群启动后架构图。 当 Flink 集群启动后，首先会启动一个 JobManger 和一个或多个的 TaskManager。由 Client 提交任务给 JobManager，JobManager 再调度任务到各个 TaskManager 去执">
-<meta name="keywords" content="flink,大数据,流式计算">
+<meta name="description" content="要了解一个系统，一般都是从架构开始。我们关心的问题是：系统部署成功后各个节点都启动了哪些服务，各个服务之间又是怎么交互和协调的。">
+<meta name="keywords" content="flink,流式计算">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Flink 原理与实现：架构和拓扑概览">
 <meta property="og:url" content="http://blog.daas.ai/2018/09/03/Flink-1-Arch/index.html">
 <meta property="og:site_name" content="Xavier&#39;s Lab">
-<meta property="og:description" content="整体架构要了解一个系统，一般都是从架构开始。我们关心的问题是：系统部署成功后各个节点都启动了哪些服务，各个服务之间又是怎么交互和协调的。下方是 Flink 集群启动后架构图。 当 Flink 集群启动后，首先会启动一个 JobManger 和一个或多个的 TaskManager。由 Client 提交任务给 JobManager，JobManager 再调度任务到各个 TaskManager 去执">
+<meta property="og:description" content="要了解一个系统，一般都是从架构开始。我们关心的问题是：系统部署成功后各个节点都启动了哪些服务，各个服务之间又是怎么交互和协调的。">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://blog.daas.ai/2018/09/03/Flink-1-Arch/TB1ObBnJFXXXXXtXVXXXXXXXXXX.jpeg">
 <meta property="og:image" content="http://blog.daas.ai/2018/09/03/Flink-1-Arch/TB1vB1uJFXXXXbaXpXXXXXXXXXX.jpeg">
 <meta property="og:image" content="http://blog.daas.ai/2018/09/03/Flink-1-Arch/TB1QKR2JFXXXXbyaXXXXXXXXXXX.jpeg">
 <meta property="og:image" content="http://blog.daas.ai/2018/09/03/Flink-1-Arch/TB1tA_GJFXXXXapXFXXXXXXXXXX.jpeg">
 <meta property="og:image" content="http://blog.daas.ai/2018/09/03/Flink-1-Arch/TB1qmtpJVXXXXagXXXXXXXXXXXX.jpeg">
-<meta property="og:updated_time" content="2018-09-03T15:04:02.352Z">
+<meta property="og:updated_time" content="2018-09-03T15:32:47.129Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Flink 原理与实现：架构和拓扑概览">
-<meta name="twitter:description" content="整体架构要了解一个系统，一般都是从架构开始。我们关心的问题是：系统部署成功后各个节点都启动了哪些服务，各个服务之间又是怎么交互和协调的。下方是 Flink 集群启动后架构图。 当 Flink 集群启动后，首先会启动一个 JobManger 和一个或多个的 TaskManager。由 Client 提交任务给 JobManager，JobManager 再调度任务到各个 TaskManager 去执">
+<meta name="twitter:description" content="要了解一个系统，一般都是从架构开始。我们关心的问题是：系统部署成功后各个节点都启动了哪些服务，各个服务之间又是怎么交互和协调的。">
 <meta name="twitter:image" content="http://blog.daas.ai/2018/09/03/Flink-1-Arch/TB1ObBnJFXXXXXtXVXXXXXXXXXX.jpeg">
 
 
@@ -274,7 +274,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="xavier ma">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.jpeg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -309,6 +309,28 @@
           </span>
 
           
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据技术/" itemprop="url" rel="index">
+                    <span itemprop="name">数据技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
 
           
             
@@ -321,6 +343,10 @@
 
           
 
+          
+              <div class="post-description">
+                  要了解一个系统，一般都是从架构开始。我们关心的问题是：系统部署成功后各个节点都启动了哪些服务，各个服务之间又是怎么交互和协调的。
+              </div>
           
 
         </div>
@@ -431,8 +457,6 @@
           
             <a href="/tags/flink/" rel="tag"># flink</a>
           
-            <a href="/tags/大数据/" rel="tag"># 大数据</a>
-          
             <a href="/tags/流式计算/" rel="tag"># 流式计算</a>
           
         </div>
@@ -520,6 +544,10 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="xavier ma" />
+            
               <p class="site-author-name" itemprop="name">xavier ma</p>
               <p class="site-description motion-element" itemprop="description"></p>
           </div>
@@ -538,15 +566,24 @@
             
 
             
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
 
             
               
               
               <div class="site-state-item site-state-tags">
-                
-                  <span class="site-state-item-count">3</span>
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">tags</span>
-                
+                </a>
               </div>
             
 
