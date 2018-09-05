@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="kibana,ELK," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="这是一个系列教程，期望从浅入深，让大家逐步掌握ELK。本文为此系列教程的第1篇，主要介绍ELK的总体结构和用途，以及Kibana的基础功能和查询语法。">
+<meta name="keywords" content="kibana,ELK">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kibana日志分析（一）基础概念与常用查询">
+<meta property="og:url" content="http://blog.daas.ai/2018/09/05/ kibana-series-tutorial-section-1/index.html">
+<meta property="og:site_name" content="Xavier&#39;s Lab">
+<meta property="og:description" content="这是一个系列教程，期望从浅入深，让大家逐步掌握ELK。本文为此系列教程的第1篇，主要介绍ELK的总体结构和用途，以及Kibana的基础功能和查询语法。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://blog.daas.ai/2018/09/05/%20kibana-series-tutorial-section-1/655EE467-C8C2-41BA-8BCB-B0C9AD93BFEE.png">
+<meta property="og:image" content="http://blog.daas.ai/2018/09/05/%20kibana-series-tutorial-section-1/CE16086F-3A2C-4B1D-9382-EB122D312884.png">
+<meta property="og:updated_time" content="2018-09-05T14:12:01.811Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kibana日志分析（一）基础概念与常用查询">
+<meta name="twitter:description" content="这是一个系列教程，期望从浅入深，让大家逐步掌握ELK。本文为此系列教程的第1篇，主要介绍ELK的总体结构和用途，以及Kibana的基础功能和查询语法。">
+<meta name="twitter:image" content="http://blog.daas.ai/2018/09/05/%20kibana-series-tutorial-section-1/655EE467-C8C2-41BA-8BCB-B0C9AD93BFEE.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.daas.ai/2018/09/05/ kibana-series-tutorial-section-1/"/>
+
+
+
+
+
+  <title>Kibana日志分析（一）基础概念与常用查询 | Xavier's Lab</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xavier's Lab</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">技术*产品*时光</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.daas.ai/2018/09/05/ kibana-series-tutorial-section-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xavier ma">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier's Lab">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">Kibana日志分析（一）基础概念与常用查询</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-05T20:02:47+08:00">
+                2018-09-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DevOps/" itemprop="url" rel="index">
+                    <span itemprop="name">DevOps</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  这是一个系列教程，期望从浅入深，让大家逐步掌握ELK。本文为此系列教程的第1篇，主要介绍ELK的总体结构和用途，以及Kibana的基础功能和查询语法。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Kibana日志分析（一）基础概念与常用查询"><a href="#Kibana日志分析（一）基础概念与常用查询" class="headerlink" title="Kibana日志分析（一）基础概念与常用查询"></a>Kibana日志分析（一）基础概念与常用查询</h1><p>最近发现，很多技术同事对强大的ELK“相逢见面不相识”，甚是遗憾！为了让这些朋友早日踏上ELK的康庄大道（不归路），让他们了解、使用，最终精通ELK，特制作了本系列教程，期望从浅入深，让大家逐步掌握ELK。<br>本文为此系列教程的第一篇，主要介绍ELK的总体结构和用途，并介绍Kibana的基础功能和查询语法。</p>
+<h2 id="0x1-什么是ELK"><a href="#0x1-什么是ELK" class="headerlink" title="0x1 什么是ELK"></a>0x1 什么是ELK</h2><p>ELK在服务器运维界应该是运用的非常成熟了，很多成熟的大型项目都使用ELK来作为前端日志监控、分析的工具。<br>那么首先，我们来了解下什么是ELK，ELK实际上是三个工具的集合：</p>
+<ul>
+<li>E：Elasticsearch 基于Lucenne的搜索服务器，提供一个分布式多用户的全文搜索引擎，能过做到实时搜索。</li>
+<li>L：Logstash 可以对日志进行采集、过滤、输出。</li>
+<li>K：Kibana  可以汇总、分析、搜索日志数据并提供友好的web界面，它也是我们今天介绍的主角。<br>这三个工具各司其职，最终形成一整套的日志监控架构<br><img src="/2018/09/05/ kibana-series-tutorial-section-1/655EE467-C8C2-41BA-8BCB-B0C9AD93BFEE.png" alt=""></li>
+</ul>
+<h2 id="0x2-ELK有什么用"><a href="#0x2-ELK有什么用" class="headerlink" title="0x2 ELK有什么用"></a>0x2 ELK有什么用</h2><p>现在已经有非常多的公司在使用这套架构了，例如Sina、饿了么、携程，这些公司都是这方面的先驱。同时，Aliyun也开放了ELK的云端版。</p>
+<h3 id="日志分析"><a href="#日志分析" class="headerlink" title="日志分析"></a>日志分析</h3><h4 id="场景一-运维同学"><a href="#场景一-运维同学" class="headerlink" title="场景一 运维同学"></a>场景一 运维同学</h4><p>作为一个运维工程师， 某天虚拟机出现故障， 想看看虚拟机是否有异常日志，物理机上是否有异常日志， 管理物理机的云平台／系统是否有发生异常日志， 一个个主机系统登陆过去， 输入账号密码费时费力，有时还会出现记不住密码干着急的情况，大大影响了排障的效率。 有没有一个系统，能够集中查看和搜索日志，不需要繁琐的登陆， 方便的获取排障所需的重要信息， 有异常还能够订阅？</p>
+<h4 id="场景二-开发同学"><a href="#场景二-开发同学" class="headerlink" title="场景二 开发同学"></a>场景二 开发同学</h4><p>作为一个开发人员， 开发的系统经常需要调用外部的api， 每次出现问题需要去查看日志，看是哪个环节出现问题， 是调用第三方api出错，还是连接数据库出错，只能一个一个查。 另外还会遇到的问题是， 有时候无意中grep了一个大的文件，导致iowait冲高，引发不必要的系统异常告警。 有没有一个工具能够提供各种仪表盘，每次打开一个页面就能一目了然的看到调用各个api的情况，调用了多少次， 失败了多少次？</p>
+<h4 id="场景三-测试同学"><a href="#场景三-测试同学" class="headerlink" title="场景三 测试同学"></a>场景三 测试同学</h4><p>开发人员上线新版本，上线过程中可能会出现各种问题。 有时不能及时发现会引起哪些异常，对其它系统有哪些影响。有没有一个工具，可以看到和分析上线新版本前后的变化？这样就能有助于分析相应的故障是否是和上线新版本有关了。</p>
+<h4 id="场景四-团队Leader"><a href="#场景四-团队Leader" class="headerlink" title="场景四 团队Leader"></a>场景四 团队Leader</h4><p>作为一个团队领导， 团队开发产品已经上线一段时间了， 希望看到产品有多少人访问， 哪个功能访问了多少次，模块的出错率如何，每次都到机器上去跑分析脚本，费时费力，还不直观， 如果产品部署在分布式集群统计起来更是麻烦， 有没有一个系统能以更加简便的方式可以查看到这些情况？</p>
+<p>上述的问题，ELK统统可以解决。另外，ElasticSearch还是非常出色的NoSQL产品，广泛应用于搜索、数据分析、安全等领域。</p>
+<h2 id="0x2-Kibana界面功能"><a href="#0x2-Kibana界面功能" class="headerlink" title="0x2 Kibana界面功能"></a>0x2 Kibana界面功能</h2><p>下面就是Kibana的基础界面<br><img src="/2018/09/05/ kibana-series-tutorial-section-1/CE16086F-3A2C-4B1D-9382-EB122D312884.png" alt=""></p>
+<blockquote>
+<p>进入演示  </p>
+</blockquote>
+<h2 id="0x3-Kibana查询语法"><a href="#0x3-Kibana查询语法" class="headerlink" title="0x3 Kibana查询语法"></a>0x3 Kibana查询语法</h2><p>本次我们主要介绍Kibana的简易语法，用20%时间学会80%的运用手段。 这些简易语法是Kibana上最常用的搜索语法,必须要掌握！</p>
+<p>简易语法详细解析：</p>
+<h3 id="全文模糊搜索：直接搜索关键字"><a href="#全文模糊搜索：直接搜索关键字" class="headerlink" title="全文模糊搜索：直接搜索关键字"></a>全文模糊搜索：直接搜索关键字</h3><p>这个最简单，直接在查询文本框里输入，想查的关键字，比如：tms</p>
+<h3 id="单个字段的模糊搜索：单字段的全文检索"><a href="#单个字段的模糊搜索：单字段的全文检索" class="headerlink" title="单个字段的模糊搜索：单字段的全文检索"></a>单个字段的模糊搜索：单字段的全文检索</h3><p>在搜索关键字 <em>之前</em> 加上字段名和冒号 ，可以写作 ：<br><code>message:ESB响应报文</code><br><code>request_uri:&quot;/kxtx-ga/api/apiApp/~&quot;</code></p>
+<h3 id="单字段的精确检索"><a href="#单字段的精确检索" class="headerlink" title="单字段的精确检索"></a>单字段的精确检索</h3><p>单字段的精确检索，在搜索关键字前后加双引号，比如：知道线程的关键字是“http”，想查询这些线程下的相关日志。<br><code>thread_name:&quot;http&quot;</code></p>
+<h3 id="单个字段的多匹配项搜索"><a href="#单个字段的多匹配项搜索" class="headerlink" title="单个字段的多匹配项搜索"></a>单个字段的多匹配项搜索</h3><p>+：搜索结果中必须包含此项 -：不能含有此项 什么都没有则可有可无： +token -appVersion appCode</p>
+<h3 id="多个检索条件的组合"><a href="#多个检索条件的组合" class="headerlink" title="多个检索条件的组合"></a>多个检索条件的组合</h3><p>可以使用 NOT, AND 和 OR 来组合检索，注意必须是<strong>大写</strong>。<br>比如下面的查询，在ESB的ERROR级别日志中，剔除掉部分常见异常，用来监控ESB本身Engine的问题。<br><code>NOT message:(&quot;Value for taskId cannot be null&quot; OR &quot;ESB获取请求头异常&quot;  OR &quot;com.gillion.esb.engine.exceptions.ResponseException&quot; OR &quot;http:500 服务提供方系统处理错误&quot; OR &quot;http:404&quot; OR &quot;无法正常读取HTTP响应结果&quot; OR &quot;http:504&quot; OR &quot;http:503&quot; OR &quot;http:502&quot;) AND log_level:ERROR</code></p>
+<h3 id="字段是否存在"><a href="#字段是否存在" class="headerlink" title="字段是否存在"></a>字段是否存在</h3><p>比如在Nginx的日志分析，<em>exists</em>:tags 表示要求 tags 字段存在；<em>missing</em>:tags 表示要求 tags 字段不存在。</p>
+<h3 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h3><p>用 ? 表示单字母，<em> 表示任意个字母。比如 fir?t mess</em>。</p>
+<h3 id="正则"><a href="#正则" class="headerlink" title="正则"></a>正则</h3><p>需要比通配符更复杂一点的表达式，可以使用正则。比如 mesg:/mes{2}ages?/。注意 ES 中正则性能很差，而且支持的功能也不是特别强大，尽量不要使用。</p>
+<h3 id="范围搜索"><a href="#范围搜索" class="headerlink" title="范围搜索"></a>范围搜索</h3><p>数值/时间/IP/字符串 类型的字段可以对某一范围进行查询<br>比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">length:[100 TO 200]</span><br><span class="line">sip:[&quot;172.24.20.110&quot; TO &quot;172.24.20.140&quot;]</span><br><span class="line">date:&#123;&quot;now-6h&quot; TO &quot;now&quot;&#125;</span><br><span class="line">tag:&#123;b TO e&#125;  搜索b到e中间的字符</span><br><span class="line">count:[10 TO *]  表示一端不限制范围</span><br><span class="line">count:[1 TO 5&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>注：</strong><br><strong>[ ] 表示端点数值包含在范围内</strong><br><strong>{ } 表示端点数值不包含在范围内</strong><br>可以混合使用，比如上面语句为1到5，包括1，不包括5。<br>简化写法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">responsetime:&gt;10</span><br><span class="line">responsetime:&lt;=10</span><br><span class="line">responsetime:(&gt;0 AND &lt;=30)</span><br><span class="line">request_uri:&quot;/kxtx-ga/api/apiApp/~&quot; AND responsetime:&gt;3</span><br></pre></td></tr></table></figure></p>
+<h2 id="0x4-总结与Q-amp-A"><a href="#0x4-总结与Q-amp-A" class="headerlink" title="0x4 总结与Q&amp;A"></a>0x4 总结与Q&amp;A</h2><p>本文主要面向日志分析的场景，为刚刚接触的同学，介绍了ELK的基本知识。主要包括：</p>
+<ol>
+<li>什么是ELK。</li>
+<li>ELK的使用场景，尤其是在日志方面的广泛用途</li>
+<li>Kibana的界面和主要功能</li>
+<li>Kibana的日志查询语法</li>
+</ol>
+<h2 id="0x5-参考资料"><a href="#0x5-参考资料" class="headerlink" title="0x5 参考资料"></a>0x5 参考资料</h2><ul>
+<li>ELK官方文档：<a href="https://www.elastic.co/guide/index.html" target="_blank" rel="noopener">Elastic Stack and Product Documentation      | Elastic</a></li>
+<li>Kibana官方文档<a href="https://www.elastic.co/guide/en/kibana/current/index.html" target="_blank" rel="noopener">Kibana User Guide 6.4      | Elastic</a></li>
+<li>《Elasticsearch 权威指南》</li>
+<li>《ELK中文指南》</li>
+<li>《Mastering ElasticSearch》</li>
+<li>《Manning Elasticsearch in Action》</li>
+</ul>
+<p>#数据/ELK</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/kibana/" rel="tag"># kibana</a>
+          
+            <a href="/tags/ELK/" rel="tag"># ELK</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/03/Flink-1-Arch/" rel="next" title="Flink 原理与实现：架构和拓扑概览">
+                <i class="fa fa-chevron-left"></i> Flink 原理与实现：架构和拓扑概览
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="xavier ma" />
+            
+              <p class="site-author-name" itemprop="name">xavier ma</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/maxavier-git" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:maxavier@126.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Kibana日志分析（一）基础概念与常用查询"><span class="nav-number">1.</span> <span class="nav-text">Kibana日志分析（一）基础概念与常用查询</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x1-什么是ELK"><span class="nav-number">1.1.</span> <span class="nav-text">0x1 什么是ELK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x2-ELK有什么用"><span class="nav-number">1.2.</span> <span class="nav-text">0x2 ELK有什么用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#日志分析"><span class="nav-number">1.2.1.</span> <span class="nav-text">日志分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#场景一-运维同学"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">场景一 运维同学</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#场景二-开发同学"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">场景二 开发同学</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#场景三-测试同学"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">场景三 测试同学</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#场景四-团队Leader"><span class="nav-number">1.2.1.4.</span> <span class="nav-text">场景四 团队Leader</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x2-Kibana界面功能"><span class="nav-number">1.3.</span> <span class="nav-text">0x2 Kibana界面功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x3-Kibana查询语法"><span class="nav-number">1.4.</span> <span class="nav-text">0x3 Kibana查询语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#全文模糊搜索：直接搜索关键字"><span class="nav-number">1.4.1.</span> <span class="nav-text">全文模糊搜索：直接搜索关键字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单个字段的模糊搜索：单字段的全文检索"><span class="nav-number">1.4.2.</span> <span class="nav-text">单个字段的模糊搜索：单字段的全文检索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单字段的精确检索"><span class="nav-number">1.4.3.</span> <span class="nav-text">单字段的精确检索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单个字段的多匹配项搜索"><span class="nav-number">1.4.4.</span> <span class="nav-text">单个字段的多匹配项搜索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多个检索条件的组合"><span class="nav-number">1.4.5.</span> <span class="nav-text">多个检索条件的组合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字段是否存在"><span class="nav-number">1.4.6.</span> <span class="nav-text">字段是否存在</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通配符"><span class="nav-number">1.4.7.</span> <span class="nav-text">通配符</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正则"><span class="nav-number">1.4.8.</span> <span class="nav-text">正则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#范围搜索"><span class="nav-number">1.4.9.</span> <span class="nav-text">范围搜索</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x4-总结与Q-amp-A"><span class="nav-number">1.5.</span> <span class="nav-text">0x4 总结与Q&amp;A</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x5-参考资料"><span class="nav-number">1.6.</span> <span class="nav-text">0x5 参考资料</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">2017-2018 Xavier Ma</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
