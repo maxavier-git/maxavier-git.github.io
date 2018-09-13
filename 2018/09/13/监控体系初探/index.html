@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="监控,Prmometheus,Monitor,Open-Falcon," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文是最近对监控体系认识的总结。系统监控是通过技术手段发现服务异常，并持续优化业务可用性与用户体验的行为。它有监控体系和模型、监控平台、人员与组织等方面组成。本文试图对各方面的思路、设计和实践进行梳理。由于时间关系，很多认识还不是很深入、细致。">
+<meta name="keywords" content="监控,Prmometheus,Monitor,Open-Falcon">
+<meta property="og:type" content="article">
+<meta property="og:title" content="监控体系初探">
+<meta property="og:url" content="http://blog.daas.ai/2018/09/13/监控体系初探/index.html">
+<meta property="og:site_name" content="Xavier&#39;s Lab">
+<meta property="og:description" content="本文是最近对监控体系认识的总结。系统监控是通过技术手段发现服务异常，并持续优化业务可用性与用户体验的行为。它有监控体系和模型、监控平台、人员与组织等方面组成。本文试图对各方面的思路、设计和实践进行梳理。由于时间关系，很多认识还不是很深入、细致。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://blog.daas.ai/2018/09/13/监控体系初探/D4D28E79-9D7D-4B09-8AD0-D6E4576F7FDB.png">
+<meta property="og:image" content="http://blog.daas.ai/2018/09/13/监控体系初探/AD640D56-7A81-49FA-A23C-9D4789DD548B.png">
+<meta property="og:image" content="http://blog.daas.ai/2018/09/13/监控体系初探/221D12D7-3ADF-4C01-9EE9-9060763E69EC.png">
+<meta property="og:updated_time" content="2018-09-13T12:50:54.873Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="监控体系初探">
+<meta name="twitter:description" content="本文是最近对监控体系认识的总结。系统监控是通过技术手段发现服务异常，并持续优化业务可用性与用户体验的行为。它有监控体系和模型、监控平台、人员与组织等方面组成。本文试图对各方面的思路、设计和实践进行梳理。由于时间关系，很多认识还不是很深入、细致。">
+<meta name="twitter:image" content="http://blog.daas.ai/2018/09/13/监控体系初探/D4D28E79-9D7D-4B09-8AD0-D6E4576F7FDB.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.daas.ai/2018/09/13/监控体系初探/"/>
+
+
+
+
+
+  <title>监控体系初探 | Xavier's Lab</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xavier's Lab</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">技术*产品*时光</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.daas.ai/2018/09/13/监控体系初探/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xavier ma">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier's Lab">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">监控体系初探</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-13T15:24:52+08:00">
+                2018-09-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DevOps/" itemprop="url" rel="index">
+                    <span itemprop="name">DevOps</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/09/13/监控体系初探/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/09/13/监控体系初探/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  本文是最近对监控体系认识的总结。系统监控是通过技术手段发现服务异常，并持续优化业务可用性与用户体验的行为。它有监控体系和模型、监控平台、人员与组织等方面组成。本文试图对各方面的思路、设计和实践进行梳理。由于时间关系，很多认识还不是很深入、细致。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="监控体系初探"><a href="#监控体系初探" class="headerlink" title="监控体系初探"></a>监控体系初探</h1><h2 id="0x1-什么是监控"><a href="#0x1-什么是监控" class="headerlink" title="0x1 什么是监控"></a>0x1 什么是监控</h2><h3 id="监控的定义"><a href="#监控的定义" class="headerlink" title="监控的定义"></a>监控的定义</h3><p>通过技术手段发现服务异常，并持续优化业务可用性与用户体验的行为。</p>
+<h3 id="监控的目标"><a href="#监控的目标" class="headerlink" title="监控的目标"></a>监控的目标</h3><ol>
+<li>及时发现问题</li>
+<li>能够快速对问题进行定位<h3 id="有效监控的关键点"><a href="#有效监控的关键点" class="headerlink" title="有效监控的关键点"></a>有效监控的关键点</h3></li>
+<li>全面，建立立体的监控体系，并持续优化<ul>
+<li>横行覆盖：各个产品以及产品间的流程</li>
+<li>纵向覆盖：从用户体验到基础设施各层面</li>
+</ul>
+</li>
+<li>准确，尽力避免误报，不断降低漏报。</li>
+<li>及时，提升监控的性能，降低监控数据流的延迟。</li>
+</ol>
+<h2 id="0x2-体系模型"><a href="#0x2-体系模型" class="headerlink" title="0x2  体系模型"></a>0x2  体系模型</h2><p>由于分布式系统的复杂性，要达成及时发现问题，以及快速定位问题的目标，监控系统一般被设计成多层面、多维度的立体监控模式。同时构建与之匹配的监控与告警工具、人员组织和流程支持。</p>
+<h3 id="维度"><a href="#维度" class="headerlink" title="维度"></a>维度</h3><p><img src="/2018/09/13/监控体系初探/D4D28E79-9D7D-4B09-8AD0-D6E4576F7FDB.png" alt=""></p>
+<h4 id="横行维度"><a href="#横行维度" class="headerlink" title="横行维度"></a>横行维度</h4><p>在横行上，监控体系可以按业务域/业务/业务活动/支持系统 逐级划分。根据每个领域的特点，分别定义需要监控的项目。在此过程中，还要综合考虑SLA要求/系统现状/人力资源/成本等要素。</p>
+<h4 id="纵向维度"><a href="#纵向维度" class="headerlink" title="纵向维度"></a>纵向维度</h4><p>按照从用户请求到系统处理的过程依赖关系，可以划分为以下的监控分层结构。上级的分层依赖下级，监控的可以按层次逐级梳理和定义。</p>
+<h3 id="标准指标"><a href="#标准指标" class="headerlink" title="标准指标"></a>标准指标</h3><p>确定需要收集的指标类型十分重要，这些指标和应用程序相关。选择的指标可以简化故障发生时排除故障的流程，并且还可以在服务和基础设施上保持很高的稳定性。</p>
+<p>RED方法遵循Google在Four Golden Signals中提及的原则，聚焦于检测最终用户在使用web服务时关心的东西。</p>
+<p>在RED方法中，我们通过监控三项关键指标来管理架构中的每个微服务：</p>
+<ul>
+<li>（Request）Rate – 你的服务所服务的每秒的请求数</li>
+<li>（Request）Errors – 每秒失败的请求数</li>
+<li>（Request）Duration – 每个请求所花费的时间，用时间间隔表示</li>
+</ul>
+<p>RED方法希望由Rate、Errors、Duration三项指标涵盖最典型的Web服务问题。同时这些指标还能够反映出请求的错误。通过这三项指标，我们就能监测到通常情况下会影响客户体验的问题。</p>
+<p>如果想要获得更细节的信息，还需要用到Saturation指标。Saturation指标用在USE（Utilization Saturation and Errors）方法中，它指的是一种带有额外作业的资源，而该资源不能够提供服务，因此必须添加到队列中以备后续处理。</p>
+<blockquote>
+<p><strong>为什么需要标准指标？</strong><br>相同的监控指标，可以让监控都变得一样。这既减少了团队针对特定的服务进行培训的数量，还减少了在高压事件响应场景或者所谓“认知负载”这些针对特定服务的特殊情况发生时，呼叫者需要记录的内容。同时，简化了监控逻辑，降低了监控自动化的实现成本。  </p>
+</blockquote>
+<h2 id="0x3-监控平台"><a href="#0x3-监控平台" class="headerlink" title="0x3 监控平台"></a>0x3 监控平台</h2><p>统一监控平台由七大角色构成：监控源、数据采集、数据存储、数据分析、数据展现、预警中心、CMDB(企业软硬件资产管理)。<br><img src="/2018/09/13/监控体系初探/AD640D56-7A81-49FA-A23C-9D4789DD548B.png" alt=""></p>
+<ol>
+<li>监控源：即按照上述“横行” 和 “纵向” 划分的监控项目</li>
+<li>数据采集：数据源如此多样，因此数据采集的设施也是非常重要。分为采集指标和采集方式两个方面。<ul>
+<li>监控指标方面，如前所述，以适合规模化推广的RED标准监控指标为主，辅以定制化指标，来实现特殊场景、问题快速定位等需求。</li>
+<li>从采集方式来说，通常可以分为接口采集、客户端agent采集、通过网络协议主动抓取（http、snmp等）</li>
+</ul>
+</li>
+<li>数据存储：采集到的数据一般都会存储到文件系统（如HDFS）、索引系统（如elasticsearch）、时序库（如influxdb）、消息队列（如kafka，做消息临时存储或者缓冲）、数据库（如mysql）</li>
+<li>数据分析：针对采集到的数据，进行数据的处理。<br>处理分两类：实时处理和批处理。技术包括Map/Reduce计算、全日志检索、流式计算、指标计算等，重点是根据不同的场景需求选择不同的计算方式。</li>
+<li>数据展现：将处理的结果进行图表展现，帮助监控和分析人员，“直观”的展示监控目标的状态。此外在多屏时代，跨设备的支持必不可少。</li>
+<li>预警：如果在数据处理过程发现了问题，则需要进行异常的分析、风险的预估以及事件的触发或告警。</li>
+<li>CMDB(企业软硬件资产管理): 软硬件资产的元数据</li>
+</ol>
+<h2 id="0x4-人力资源与组织"><a href="#0x4-人力资源与组织" class="headerlink" title="0x4 人力资源与组织"></a>0x4 人力资源与组织</h2><p>在复杂的监控场景面前，机器还无法代替人类—起码现阶段是这样—完成全部的事情。因此，有效的人力资源、组织方式和制度保障是非常重要的。<br>但是，由于公司在业务、系统复杂度、成本预算等方面，存在巨大差异，因此人力组织方面存在很大差异，应该具体分析规划。</p>
+<p>以下是一种适合中型规模的互联网平台的监控组织模式。</p>
+<ul>
+<li><p><strong>运维监控团队（对整体负责）</strong><br><strong>职责：</strong><br>  负责提升平台整体的可用性和用户体系</p>
+<ol>
+<li>设计、搭建和运营监控系统和监控体系</li>
+<li>面向各产品团队，提供通用化监控平台、全局监控策略，并提供人工监控台，辅助完成常规报警处置手段（重启等）</li>
+<li>推动和协助建设监控体系，并持续优化</li>
+<li>定期度量平台整体、各产品线的可用性与用户体验数据，并反馈</li>
+</ol>
+</li>
+<li><p>产品线敏捷团队（对产品线负责）<br><strong>职责：</strong><br>负责业务域的可用性和用户体验</p>
+<ol>
+<li>参与规划，并主动接入和实施平台整体监控体系</li>
+<li>根据业务域的特点，梳理业务活动，以及业务活动的关键依赖（服务/资源/链路等）</li>
+<li>根据1，2定义监控、告警和处置策略，坚决执行并持续优化</li>
+</ol>
+</li>
+</ul>
+<p>某公司的监控规划模版：<br><img src="/2018/09/13/监控体系初探/221D12D7-3ADF-4C01-9EE9-9060763E69EC.png" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/监控/" rel="tag"># 监控</a>
+          
+            <a href="/tags/Prmometheus/" rel="tag"># Prmometheus</a>
+          
+            <a href="/tags/Monitor/" rel="tag"># Monitor</a>
+          
+            <a href="/tags/Open-Falcon/" rel="tag"># Open-Falcon</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/05/ kibana-series-tutorial-section-1/" rel="next" title="Kibana日志分析（一）基础概念与常用查询">
+                <i class="fa fa-chevron-left"></i> Kibana日志分析（一）基础概念与常用查询
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="xavier ma" />
+            
+              <p class="site-author-name" itemprop="name">xavier ma</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/maxavier-git" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:maxavier@126.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#监控体系初探"><span class="nav-number">1.</span> <span class="nav-text">监控体系初探</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x1-什么是监控"><span class="nav-number">1.1.</span> <span class="nav-text">0x1 什么是监控</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#监控的定义"><span class="nav-number">1.1.1.</span> <span class="nav-text">监控的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#监控的目标"><span class="nav-number">1.1.2.</span> <span class="nav-text">监控的目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有效监控的关键点"><span class="nav-number">1.1.3.</span> <span class="nav-text">有效监控的关键点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x2-体系模型"><span class="nav-number">1.2.</span> <span class="nav-text">0x2  体系模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#维度"><span class="nav-number">1.2.1.</span> <span class="nav-text">维度</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#横行维度"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">横行维度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#纵向维度"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">纵向维度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标准指标"><span class="nav-number">1.2.2.</span> <span class="nav-text">标准指标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x3-监控平台"><span class="nav-number">1.3.</span> <span class="nav-text">0x3 监控平台</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x4-人力资源与组织"><span class="nav-number">1.4.</span> <span class="nav-text">0x4 人力资源与组织</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">2017-2018 Xavier Ma</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a></div>
+
+
+
+
+        
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65996570";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://maxavier.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://blog.daas.ai/2018/09/13/监控体系初探/';
+          this.page.identifier = '2018/09/13/监控体系初探/';
+          this.page.title = '监控体系初探';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://maxavier.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
