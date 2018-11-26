@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="bigdata,大数据,数据分析,Flink,Spark,DevOps,微服务,Spring Cloud,分析,场景,实践" />
+  <meta name="keywords" content="ClickHouse,Druid,Pinot,OLAP," />
 
 
 
@@ -79,15 +79,18 @@
 
 
 
-<meta name="keywords" content="bigdata,大数据,数据分析,Flink,Spark,DevOps,微服务,Spring Cloud,分析,场景,实践">
-<meta property="og:type" content="website">
-<meta property="og:title" content="about">
-<meta property="og:url" content="http://blog.daas.ai/about/index.html">
+<meta name="description" content="ClickHouse，Druid和Pinot都是近期非常流行的开源OLAP存储与查询引擎，它们都支持对大量数据进行低延迟的交互式分析查询。本文将就三者在具体应用场景上进行比较。">
+<meta name="keywords" content="ClickHouse,Druid,Pinot,OLAP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ClickHouse vs. Druid&#x2F;Pinot">
+<meta property="og:url" content="http://blog.daas.ai/2018/11/26/ClickHouse_vs._Druid_Pinot/index.html">
 <meta property="og:site_name" content="Xavier&#39;s Lab">
+<meta property="og:description" content="ClickHouse，Druid和Pinot都是近期非常流行的开源OLAP存储与查询引擎，它们都支持对大量数据进行低延迟的交互式分析查询。本文将就三者在具体应用场景上进行比较。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-03T15:22:18.261Z">
+<meta property="og:updated_time" content="2018-11-26T14:32:57.131Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="about">
+<meta name="twitter:title" content="ClickHouse vs. Druid&#x2F;Pinot">
+<meta name="twitter:description" content="ClickHouse，Druid和Pinot都是近期非常流行的开源OLAP存储与查询引擎，它们都支持对大量数据进行低延迟的交互式分析查询。本文将就三者在具体应用场景上进行比较。">
 
 
 
@@ -117,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://blog.daas.ai/about/"/>
+  <link rel="canonical" href="http://blog.daas.ai/2018/11/26/ClickHouse_vs._Druid_Pinot/"/>
 
 
 
 
 
-  <title>about | Xavier's Lab</title>
+  <title>ClickHouse vs. Druid/Pinot | Xavier's Lab</title>
   
 
 
@@ -248,33 +251,192 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.daas.ai/2018/11/26/ClickHouse_vs._Druid_Pinot/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xavier ma">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier's Lab">
+    </span>
+
     
-    
-    <div class="post-block page">
       <header class="post-header">
 
-	<h2 class="post-title" itemprop="name headline">about</h2>
-
-
-
-</header>
-
-      
-      
-      
-      <div class="post-body">
         
         
+          <h2 class="post-title" itemprop="name headline">ClickHouse vs. Druid/Pinot</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-26T21:57:52+08:00">
+                2018-11-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        
-      </div>
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据技术/" itemprop="url" rel="index">
+                    <span itemprop="name">数据技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/11/26/ClickHouse_vs._Druid_Pinot/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/11/26/ClickHouse_vs._Druid_Pinot/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  ClickHouse，Druid和Pinot都是近期非常流行的开源OLAP存储与查询引擎，它们都支持对大量数据进行低延迟的交互式分析查询。本文将就三者在具体应用场景上进行比较。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
       
       
+
+      
+        <h1 id="ClickHouse-vs-Druid-Pinot"><a href="#ClickHouse-vs-Druid-Pinot" class="headerlink" title="ClickHouse vs. Druid/Pinot"></a>ClickHouse vs. Druid/Pinot</h1><p>Druid和Pinot中的“​​Segment”数据管理方法与ClickHouse中的简单数据管理相比，定义了更多的架构层次。重要的是，这种差异对潜在的压缩效率（尽管目前所有三个系统中的压缩故事都很令人遗憾）或查询处理速度几乎没有影响。</p>
+<p><strong>ClickHouse</strong>类似于传统的RDMBS，例如PostgreSQL。特别是ClickHouse可以只部署在一台服务器上。如果部署的体量很小，例如不大于100个CPU核心用于查询处理和1 TB数据，我会说ClickHouse比Druid/Pinot具有显着的优势，因为它简单且不需要其他类型的节点，例如“Master”，“实时摄取节点”，“代理”。在这个领域，ClickHouse与InfluxDB竞争，而不是与Druid或Pinot竞争。</p>
+<p><strong>Druid/Pinot</strong>更适用于大规模的数据，场景上与HBase类似。这不是因为它们的性能特征，而是说它们更加的强调分布式能力。它们依赖于ZooKeeper，依赖于持久性复制存储（例如HDFS），关注单个节点故障的恢复能力，以及不需要经常人工关注的自主工作和数据管理。</p>
+<p>对于应用案例的广泛性比较，ClickHouse，Druid或Pinot没有明显的赢家。首先，我建议：首先考虑理解系统源代码，修复错误，添加功能的难度。以及性能比较和系统选择。</p>
+<p>其次，你可以看下面的表格。此表中的每行都描述了某个应用属性，这使得ClickHouse或Druid / Pinot可能是更好的选择。行不按重要性排序，因为对于不同的应用程序，每行的相对重要性是不同的，您需求根据应用场景作出选择。</p>
+<table><br>  <tr><br>    <th>ClickHouse</th><br>    <th>Druid/Pinot</th><br>  </tr><br>  <tr><br>    <td>具备C++经验的组织</td><br>    <td>具备Java经验的组织</td><br>  </tr><br>  <tr><br>    <td>小型集群</td><br>    <td>大型集群</td><br>  </tr><br>  <tr><br>    <td>少量表</td><br>    <td>大量表</td><br>  </tr><br>  <tr><br>    <td>单一数据集</td><br>    <td>多个不相关的数据集（多租户）</td><br>  </tr><br>  <tr><br>    <td>表和数据集永久驻留在集群中</td><br>    <td>表和数据集定期出现并从群集中退出</td><br>  </tr><br>  <tr><br>    <td>表格大小（以及它们的查询强度）在时间上是稳定的</td><br>    <td>表格随时间热度降低</td><br>  </tr><br>  <tr><br>    <td>查询的同质性（其类型，大小，按时间分布等）</td><br>    <td>异质性</td><br>  </tr><br>  <tr><br>    <td>存在可以用于分区的维度，且经过该维度分区后，几乎不会触发跨分区的数据查询<br>       </td><br>    <td>没有这样的维度，查询经常触及整个集群中的数据</td><br>  </tr><br>  <tr><br>    <td>不使用云，集群部署在特定的物理服务器上</td><br>    <td>群集部署在云中</td><br>  </tr><br>  <tr><br>    <td>无需依赖现有的Hadoop或Spark集群</td><br>    <td>Hadoop或Spark的集群已经存在并且可以使用</td><br>  </tr><br></table>
+
       
     </div>
     
     
     
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ClickHouse/" rel="tag"># ClickHouse</a>
+          
+            <a href="/tags/Druid/" rel="tag"># Druid</a>
+          
+            <a href="/tags/Pinot/" rel="tag"># Pinot</a>
+          
+            <a href="/tags/OLAP/" rel="tag"># OLAP</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/11/Chris-Richardson-microservice-2/" rel="next" title="「Chris Richardson 微服务系列」2.使用API Gateway">
+                <i class="fa fa-chevron-left"></i> 「Chris Richardson 微服务系列」2.使用API Gateway
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -317,8 +479,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -398,6 +569,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ClickHouse-vs-Druid-Pinot"><span class="nav-number">1.</span> <span class="nav-text">ClickHouse vs. Druid/Pinot</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -564,9 +751,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://blog.daas.ai/about/index.html';
-          this.page.identifier = 'about/index.html';
-          this.page.title = 'about';
+          this.page.url = 'http://blog.daas.ai/2018/11/26/ClickHouse_vs._Druid_Pinot/';
+          this.page.identifier = '2018/11/26/ClickHouse_vs._Druid_Pinot/';
+          this.page.title = 'ClickHouse vs. Druid/Pinot';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://maxavier.disqus.com/embed.js';
