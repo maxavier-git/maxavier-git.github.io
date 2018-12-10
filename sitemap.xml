@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>http://blog.daas.ai/2018/12/10/Analysis%20of%20Optimistic%20Lock%20Implementation%20(MVCC)%20in%20MYSQL/</loc>
+    
+    <lastmod>2018-12-10T14:43:11.199Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.daas.ai/2018/12/07/Database-Concurrency-Control-Lock-and-MVCC/</loc>
+    
+    <lastmod>2018-12-10T14:35:18.114Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.daas.ai/2018/11/26/ClickHouse_vs._Druid_Pinot/</loc>
+    
+    <lastmod>2018-12-10T14:07:44.881Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.daas.ai/2018/12/10/See%20the%20picture%20to%20understand%20RocksDB/</loc>
+    
+    <lastmod>2018-12-10T13:56:04.429Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.daas.ai/2018/10/11/Chris-Richardson-microservice-1/</loc>
+    
+    <lastmod>2018-10-10T19:41:05.562Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.daas.ai/2018/10/11/Chris-Richardson-microservice-2/</loc>
+    
+    <lastmod>2018-10-10T19:40:47.092Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.daas.ai/2018/09/20/what-is-pac/</loc>
+    
+    <lastmod>2018-09-20T10:29:32.713Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.daas.ai/2018/09/18/flink-code-section-1/</loc>
+    
+    <lastmod>2018-09-17T23:32:04.321Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.daas.ai/2018/09/15/KCon2018%E8%AE%AE%E9%A2%98PPT%E5%85%AC%E5%BC%80/</loc>
+    
+    <lastmod>2018-09-15T04:22:58.111Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.daas.ai/2018/09/13/%E7%9B%91%E6%8E%A7%E4%BD%93%E7%B3%BB%E5%88%9D%E6%8E%A2/</loc>
+    
+    <lastmod>2018-09-13T12:54:31.205Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.daas.ai/2018/09/05/%20kibana-series-tutorial-section-1/</loc>
+    
+    <lastmod>2018-09-05T14:12:01.811Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.daas.ai/2018/09/03/Flink-1-Arch/</loc>
+    
+    <lastmod>2018-09-03T15:32:47.129Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.daas.ai/about/index.html</loc>
+    
+    <lastmod>2018-09-03T15:22:18.261Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.daas.ai/tags/index.html</loc>
+    
+    <lastmod>2018-09-03T15:08:32.358Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.daas.ai/categories/index.html</loc>
+    
+    <lastmod>2018-09-03T15:07:51.314Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.daas.ai/2018/08/29/blog-init/</loc>
+    
+    <lastmod>2018-08-29T13:07:37.159Z</lastmod>
+    
+  </url>
+  
+</urlset>
