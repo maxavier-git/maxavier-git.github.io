@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Druid,数据架构,Flink,Kafka,TiDB,Drools," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="行业热点从消费互联网向产业互联网转移，面向B端的技术实践也逐渐成为技术人的关注焦点。作为互联网物流的深度实践者，笔者希望借本文总结产业互联网下的数据技术应用经验，聚焦B端数据平台的特点与实践，从B端业务抽象、数据模型设计、复杂场景处理，再到数据平台搭建与实践，展示出数据应用的独特图景。">
+<meta name="keywords" content="Druid,数据架构,Flink,Kafka,TiDB,Drools">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大数据的下半场，产业互联网的数据平台怎么玩？">
+<meta property="og:url" content="http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/index.html">
+<meta property="og:site_name" content="Xavier&#39;s Lab">
+<meta property="og:description" content="行业热点从消费互联网向产业互联网转移，面向B端的技术实践也逐渐成为技术人的关注焦点。作为互联网物流的深度实践者，笔者希望借本文总结产业互联网下的数据技术应用经验，聚焦B端数据平台的特点与实践，从B端业务抽象、数据模型设计、复杂场景处理，再到数据平台搭建与实践，展示出数据应用的独特图景。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/A07B031C-AF96-4910-99A6-C671FF3BC2A4.png">
+<meta property="og:image" content="http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/6DA36166-E707-4638-A952-4ABD93544E00.png">
+<meta property="og:image" content="http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/27BA8590-E2E5-4851-8CFA-686FE2161D98.png">
+<meta property="og:image" content="http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/904C8CA6-4E68-4EB2-A06B-7F1216479F66.png">
+<meta property="og:image" content="http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/B113357F-5050-4B0B-AB17-7A483C0B83B5.png">
+<meta property="og:image" content="http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/71D274B1-EAC3-4A4E-84DE-DA7478CF0438.png">
+<meta property="og:image" content="http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/73E17B94-128F-40D0-A867-DE0C587D4EDF.png">
+<meta property="og:image" content="http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/3D5B0E80-2C91-4019-B377-BB16BB701A24.png">
+<meta property="og:image" content="http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/52EB6A20-1824-4E49-BC8A-63CAD2A2EFB4.png">
+<meta property="og:image" content="http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/8866CF07-915C-411A-BC29-1007FEC4FEAF.png">
+<meta property="og:image" content="http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/A06A2A32-7FB1-4FF8-9196-62DB8F0CCA23.png">
+<meta property="og:image" content="http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/613ADFE2-BF69-4405-AC4E-BC2CA3274404.png">
+<meta property="og:updated_time" content="2018-12-24T12:19:47.198Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="大数据的下半场，产业互联网的数据平台怎么玩？">
+<meta name="twitter:description" content="行业热点从消费互联网向产业互联网转移，面向B端的技术实践也逐渐成为技术人的关注焦点。作为互联网物流的深度实践者，笔者希望借本文总结产业互联网下的数据技术应用经验，聚焦B端数据平台的特点与实践，从B端业务抽象、数据模型设计、复杂场景处理，再到数据平台搭建与实践，展示出数据应用的独特图景。">
+<meta name="twitter:image" content="http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/A07B031C-AF96-4910-99A6-C671FF3BC2A4.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/"/>
+
+
+
+
+
+  <title>大数据的下半场，产业互联网的数据平台怎么玩？ | Xavier's Lab</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Xavier's Lab</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <h1 class="site-subtitle" itemprop="description">技术*产品*时光</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xavier ma">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier's Lab">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">大数据的下半场，产业互联网的数据平台怎么玩？</h2>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-20T18:00:36+08:00">
+                2018-12-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据技术/" itemprop="url" rel="index">
+                    <span itemprop="name">数据技术</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  行业热点从消费互联网向产业互联网转移，面向B端的技术实践也逐渐成为技术人的关注焦点。作为互联网物流的深度实践者，笔者希望借本文总结产业互联网下的数据技术应用经验，聚焦B端数据平台的特点与实践，从B端业务抽象、数据模型设计、复杂场景处理，再到数据平台搭建与实践，展示出数据应用的独特图景。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="大数据的下半场-产业互联网的数据平台怎么玩？"><a href="#大数据的下半场-产业互联网的数据平台怎么玩？" class="headerlink" title="大数据的下半场-产业互联网的数据平台怎么玩？"></a>大数据的下半场-产业互联网的数据平台怎么玩？</h1><h2 id="B端业务的数据特点"><a href="#B端业务的数据特点" class="headerlink" title="B端业务的数据特点"></a>B端业务的数据特点</h2><p>那么产业互联网背景下toB端业务的数据平台，与toC业务有什么不同呢？B端业务的大数据是怎么玩的，它有什么特点，有什么新奇玩法呢？</p>
+<p>说到特点，我想起14年iphone6发布时的广告文案：“比大更大”！<br>有同学说了，你就吹吧，还能比BAT还大？我说是，也不是，它有自己的大法<br>这是大数据的4V特征，我们就从这4个维度上，看下产业互联网大数据是怎么个大法：<br><img src="/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/A07B031C-AF96-4910-99A6-C671FF3BC2A4.png" alt=""></p>
+<ul>
+<li><p>巨量（Volume）：B端业务带来更大的实体数量、更大的深度。我们知道1笔电商订单可能包含n个货物，每个货物可能有n个提货地址，然后会由多个物流员完成多个节点的服务，包括提货、集货、干线、分拨、再干线、再分拨、配送、回单等等。而这个过程的每1段，系统都会产生单独的调度指令，然后根据具体的服务，产生多笔不同主体、不同科目的记账指令。</p>
+</li>
+<li><p>高速（Velocity）：互联网平台的价值，toC端在于给到消费者更好的体验；而toB时，则在于给予B端客户更高的效率。以物流为例，平台的价值，在于让客户的 人货车场物钱更高速的协同，在单位时间内完成生产更多的服务。而提速的手段就是更快的数据分发、更智能的数据计算</p>
+</li>
+<li><p>多样（Variety）：在B端业务里，有“5流”的说法，即：商流、物流、资金流、信息流、服务流；它们涵盖了从商业到生产的全部层次。而当5流全部线上化以后，就产生了更多样的数据，比如客户关系、市场和销售的活动记录、产品的型号、路径、成本、生产计划和服务的SOP、财务的应收应付、实收实付以及逾期管理等等。</p>
+</li>
+<li><p>价值（Value）：正是因为B端业务“更深”的延伸到每个客户的“5流”数据，因此，利用这些数据可以产生客户更完整、更真实的画像，也产生更大的价值。随便举个例子，这种形式下“刷单”几乎是不可能的，因为刷了订单，运单是核对不过的，再刷了运单，结果车单又不对了，然后是账务记录、成员积分、车辆定位等等。这些数据都是彼此关联的整体，它对业务活动的记录更加完整。</p>
+</li>
+</ul>
+<h2 id="“一个例子”——货物联运的时效监控与调度系统"><a href="#“一个例子”——货物联运的时效监控与调度系统" class="headerlink" title="“一个例子”——货物联运的时效监控与调度系统"></a>“一个例子”——货物联运的时效监控与调度系统</h2><p>在卡行，我们利用数据的快速分析和传递，来帮助接入的每个物流公司的提升运作效率。尽可能利用数据能力，使我们的网络成员能够更好地为客户服务。<br>2017年底，数据团队为枢纽伙伴构建了一套物流时效的全链路监控系统，帮助提升成员的自动调度能力</p>
+<h3 id="系统目标"><a href="#系统目标" class="headerlink" title="系统目标"></a>系统目标</h3><ul>
+<li>提高全链路的运输时效，降低人工成本。</li>
+<li>改变被动服务变成主动服务，提高客户满意度。</li>
+</ul>
+<h3 id="主要功能"><a href="#主要功能" class="headerlink" title="主要功能"></a>主要功能</h3><p>精确跟踪每一票货物，在每一个环节上的时效状态，实现实时反馈和智能预警。</p>
+<p><img src="/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/6DA36166-E707-4638-A952-4ABD93544E00.png" alt=""></p>
+<p>这是运输路径的示意图，货物发出以后，由提货成员运到附近的枢纽，在经过枢纽的集货和转运，交给干线成员完成省到省、市到市到长途干线运输；然后交给目的地的枢纽，目的地枢纽会完成本地共享配送，最终将货物安全的交给收货客户。</p>
+<p>从图上可以看到整个过程，经过的环节非常多，要让这些环节的配合达到最优。需要大量的数据实时的传递，这给数据平台带来前所未有的挑战。</p>
+<h3 id="主要挑战："><a href="#主要挑战：" class="headerlink" title="主要挑战："></a>主要挑战：</h3><ul>
+<li>复杂性 ，来自产品_成员_订单/运输等多个板块的复杂数据关系；</li>
+<li>实时性，低延迟、高可用的数据管道；</li>
+<li>精确性，看板上的每个数字必须精确；</li>
+<li>拓展性，为成百上千家枢纽提供多个垂直数据看板，并支持拓展至成千上万。</li>
+</ul>
+<h2 id="数据平台架构"><a href="#数据平台架构" class="headerlink" title="数据平台架构"></a>数据平台架构</h2><p>如何满足这些要求呢？首先看下系统的整体架构。</p>
+<p><img src="/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/27BA8590-E2E5-4851-8CFA-686FE2161D98.png" alt=""></p>
+<ul>
+<li>数据采集层，位于架构的最低层，我们通过数据总线技术汇总来自关系数据库、日志文件、用户行为和物联网的消息和事件，然后转换为统一Schame的数据流；</li>
+<li>计算层， 提供了实时和批量的两个模式的计算能力，来实现实时性和准确性间的最大平衡；</li>
+<li>存储层， 我们会根据数据的处理过程，划分不同的横向数据层次；同时根据我们的业务建模，划分不同的纵向领域；</li>
+<li>数据服务层，位于架构的最顶层，为不同用户场景，提供不能的查询能力。比如存量数据的多维度聚合、实时数据的推送、全量明细的检索等等；</li>
+</ul>
+<h2 id="关键设计与技术"><a href="#关键设计与技术" class="headerlink" title="关键设计与技术"></a>关键设计与技术</h2><p>下面的章节，为读者逐一介绍架构各层的设计思路与关键技术。</p>
+<h3 id="数据模型"><a href="#数据模型" class="headerlink" title="数据模型"></a>数据模型</h3><p>仔细分析上面的示例就会发现，由于业务链条长，中间环节多，参与元素繁杂，造成数据需求的复杂化和多样化。为了提升对数据用户的交付效率，同时，实现数据资产的有效积淀。基于对自身业务的高度抽象，我们参考领域驱动设计的基础上，对数据模型进行了深度的分析和设计。</p>
+<p>下面是数据模型的整体架构：</p>
+<p><img src="/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/904C8CA6-4E68-4EB2-A06B-7F1216479F66.png" alt=""></p>
+<p><strong>模型构成：</strong></p>
+<ul>
+<li>应用数据层：具体需求而构建的应用层</li>
+<li>主题数据层：补充维度后的数据，采用宽表模型，并汇总标准指标。</li>
+<li>单元数据层：整合领域事实数据的全量明细</li>
+<li>贴源数据层：原始数据实时队列。</li>
+</ul>
+<p>基于多层模型的递进式数据转换设计，基于对物流平台业务的深入理解，设计出抽象、内聚、职责单一的数据模型，并不断演进。<br>有效避免了Case by Case的重复建设，有效提升数据产品交付效率。同时，也支持在不断层面做数据存储和计算的针对性优化 。</p>
+<h3 id="实时数据总线"><a href="#实时数据总线" class="headerlink" title="实时数据总线"></a>实时数据总线</h3><p>由于业务场景非常丰富，新数据源的接入成为常态。比如，货架上RFID的应用，用来跟踪和收集货物的仓位数据。类似这种新数据的接入，如果每次都修改数据分析的代码，在交付效率上是无法接受的。<br>为实现不同数据源的快速对接，尤其是新数据源的对接。同时为下游数据分析、计算提供标准的数据与接口，避免数据源的复杂性向下游传导，我们设计了统一的实时数据总线。总线实现了跨数据源的标准数据封装格式，通过元数据配置，实现数据格式的转换，以及下游的数据订阅。</p>
+<p>数据总线的处理流程如下：</p>
+<p><img src="/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/B113357F-5050-4B0B-AB17-7A483C0B83B5.png" alt=""></p>
+<p>总体的设计思路如下：</p>
+<ul>
+<li>数据采集，负责对接不同的数据源，实现实时抽取出增量数据，并支持批量抽取。其中对MySQL数据库会采用Binlog订阅方式抽取；对于事件、日志类型支持多种Agent对接；</li>
+<li>Metadata监控模块，监听数据源的Schema变化，并实现记录、报警；</li>
+<li>所有数据事件，被转换为统一格式发布在Kafka的Topic上；</li>
+<li>数据总线，接入数据平台统一的配置管理中心。实现元数据、数据源契约和调度的管理</li>
+<li>为了价值最大化，数据总线不单服务于数据平台本事，还服务于数据平台与业务系统、业务系统与业务系统间的数据交换。</li>
+</ul>
+<h3 id="流计算引擎"><a href="#流计算引擎" class="headerlink" title="流计算引擎"></a>流计算引擎</h3><p>示例系统要求数据的实时性和精确性，既要满足数据从发生到目标用户的最低延迟，同时要求对原始数据进行准确关联和规则判断。这对数据平台的流计算引擎提出了更高的要求。<br><strong>B端业务对流计算的要求，总结如下：</strong></p>
+<ul>
+<li>较低的延迟；</li>
+<li>支持有状态的计算，并支持故障时的状态恢复；</li>
+<li>对高级语义的良好支持；</li>
+<li>以优雅的方式处理峰值流量；</li>
+<li>敏捷的编程模型，以应对频繁变更的需求；</li>
+<li>可拓展的性能；</li>
+<li>…</li>
+</ul>
+<p><img src="/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/71D274B1-EAC3-4A4E-84DE-DA7478CF0438.png" alt=""></p>
+<p>经过对主流Framework的深入分析，我们最后选择了Flink作为流计算引擎的底层框架。并在Flink基础上，构建了流计算的工程体系：</p>
+<ul>
+<li>数据工程师，面向Flink基础设施的开发和维护。比如：通用Operator的开发、State Backend的配置、不同场景的性能调优等；</li>
+<li>数据分析师，以及，面向业务客户的沟通和数据模型的设计与升级，通过大量实践，不断优化上文所述的各层模型。</li>
+<li>ETL工程师，根据业务需求，编写基于Flink SQL的数据转换代码。并通过数据平台的Web Console完成测试和发布。</li>
+</ul>
+<p>下面我们用几个简单的例子，演示一下基于Flink的ETL开发模式。</p>
+<ul>
+<li>数据流Join</li>
+</ul>
+<p><img src="/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/73E17B94-128F-40D0-A867-DE0C587D4EDF.png" alt=""></p>
+<ul>
+<li>简单时效判断<br><img src="/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/3D5B0E80-2C91-4019-B377-BB16BB701A24.png" alt=""></li>
+</ul>
+<ul>
+<li>Flink CEP规则<br><img src="/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/52EB6A20-1824-4E49-BC8A-63CAD2A2EFB4.png" alt=""></li>
+</ul>
+<p>关于Flink的一些Tips：</p>
+<ul>
+<li>参照业务活动划分事件流，以控制状态存储的膨胀；</li>
+<li>将业务逻辑模块化，并注册为Flink UDF，提高业务交付效率；</li>
+<li>使⽤Asyn I/O 调⽤外部业务系统接⼝ ；</li>
+<li>充分利用RocksDB的性能优势，优化State backend；</li>
+</ul>
+<h3 id="复杂事件处理机制"><a href="#复杂事件处理机制" class="headerlink" title="复杂事件处理机制"></a>复杂事件处理机制</h3><p>虽然Flink CEP 解决了部分场景的规则判断问题，但是面对较复杂的场景仍然稍显不足。<br>比如：</p>
+<blockquote>
+<p>首家枢纽车辆签到时间在路由产品的截单时间-1小时前的，路由的最末端站点或枢纽，需在规定路由时效内23:59:59前完成系统签收；否则时效+1天；  </p>
+</blockquote>
+<p>因此，除Flink CEP外，我们还引入了专门的规则引擎服务，实现流计算节点内的复杂规则匹配问题。</p>
+<p>整体框架示意图：</p>
+<p><img src="/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/8866CF07-915C-411A-BC29-1007FEC4FEAF.png" alt=""></p>
+<p>通过这一设计，为我们带来以下收益：</p>
+<ul>
+<li>从复杂的需求实现中解脱出来，同时避免了硬编码方式产生大量的重复代码；</li>
+<li>基于规则引擎（Drools）将业务规则从Flink到operator实现中剥离，实现规则热部署；</li>
+<li>由于规则引擎服务独立部署，使得针对规则计算的性能优化便于实施；</li>
+</ul>
+<h3 id="数据模型治理"><a href="#数据模型治理" class="headerlink" title="数据模型治理"></a>数据模型治理</h3><p>示例系统只是我们实施数十个项目之一，而且随着业务的发展，还会有更多、更复杂的数据项目运行在数据平台之上。如何有效管理数据模型快速膨胀的复杂度，就摆在我们面前、必须解决的挑战。<br>为此，我们拓展了上文的数据平台Web Console ，通过采集数据源、中间存储、目标存储的Metadata，解析ETL SQL，再配合手工录入，初步形成了基本的元数据管理。</p>
+<p>主要功能包括：</p>
+<ul>
+<li>自动监控与获取</li>
+<li>检索与管理</li>
+<li>数据模型变更日志</li>
+<li>数据血缘关系（开发中）</li>
+<li>数据地图（开发中）<br><img src="/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/A06A2A32-7FB1-4FF8-9196-62DB8F0CCA23.png" alt=""></li>
+</ul>
+<p>除了元数据管理，我们还对业务系统的数据质量进行“预”管理。</p>
+<ul>
+<li>主数据管理系统（MDM），主数据包括客户、网络、行政区划、地址库、线路等。</li>
+<li>数据处理全流程监控</li>
+<li>交叉钩稽检查（开发中）</li>
+</ul>
+<p><strong>数据模型治理</strong>是需要长期投入的工作，但却是保障企业数据资产有效管理和不断升值的最重要工作。我们很庆幸在平台建设初期就意识到这一点，为后续发展奠定了良好基础。</p>
+<h2 id="未来展望"><a href="#未来展望" class="headerlink" title="未来展望"></a>未来展望</h2><p>以上，介绍了B端数据平台的特点和挑战，以及应对这些特殊挑战的设计方案。但由于产业互联网尚处在起步阶段，还有很长的路要走。因此，我们的数据平台也需要不断的进化和成长。<br>未来，我们计划从以下三个方向不断实践，希望能最大限度的释放大数据的能力，创造更多业务价值。</p>
+<p><img src="/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/613ADFE2-BF69-4405-AC4E-BC2CA3274404.png" alt=""></p>
+<p>到这里，我今天的分享就差不多了。主要想将我们在toB业务中的实践心得分享给大家。让大家对toB数据平台有一个概要性的了解。由于篇幅关系，很多内容只能“点到为止”，欢迎大家访问我的<a href="http://blog.daas.ai">个人博客</a>深入沟通。产业互联网被大佬们认为互联网的下半场，相信从战略、战术、到踢球的规则、脚法都有很多不同，期待各位志同道合者深入交流。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Druid/" rel="tag"># Druid</a>
+          
+            <a href="/tags/数据架构/" rel="tag"># 数据架构</a>
+          
+            <a href="/tags/Flink/" rel="tag"># Flink</a>
+          
+            <a href="/tags/Kafka/" rel="tag"># Kafka</a>
+          
+            <a href="/tags/TiDB/" rel="tag"># TiDB</a>
+          
+            <a href="/tags/Drools/" rel="tag"># Drools</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/10/See the picture to understand RocksDB/" rel="next" title="看图了解RocksDB">
+                <i class="fa fa-chevron-left"></i> 看图了解RocksDB
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="xavier ma" />
+            
+              <p class="site-author-name" itemprop="name">xavier ma</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/maxavier-git" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:maxavier@126.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#大数据的下半场-产业互联网的数据平台怎么玩？"><span class="nav-number">1.</span> <span class="nav-text">大数据的下半场-产业互联网的数据平台怎么玩？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#B端业务的数据特点"><span class="nav-number">1.1.</span> <span class="nav-text">B端业务的数据特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#“一个例子”——货物联运的时效监控与调度系统"><span class="nav-number">1.2.</span> <span class="nav-text">“一个例子”——货物联运的时效监控与调度系统</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#系统目标"><span class="nav-number">1.2.1.</span> <span class="nav-text">系统目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主要功能"><span class="nav-number">1.2.2.</span> <span class="nav-text">主要功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主要挑战："><span class="nav-number">1.2.3.</span> <span class="nav-text">主要挑战：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据平台架构"><span class="nav-number">1.3.</span> <span class="nav-text">数据平台架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关键设计与技术"><span class="nav-number">1.4.</span> <span class="nav-text">关键设计与技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据模型"><span class="nav-number">1.4.1.</span> <span class="nav-text">数据模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实时数据总线"><span class="nav-number">1.4.2.</span> <span class="nav-text">实时数据总线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流计算引擎"><span class="nav-number">1.4.3.</span> <span class="nav-text">流计算引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复杂事件处理机制"><span class="nav-number">1.4.4.</span> <span class="nav-text">复杂事件处理机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据模型治理"><span class="nav-number">1.4.5.</span> <span class="nav-text">数据模型治理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#未来展望"><span class="nav-number">1.5.</span> <span class="nav-text">未来展望</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">2017-2018 Xavier Ma</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a></div>
+
+
+
+
+        
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65996570";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://maxavier.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/';
+          this.page.identifier = '2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/';
+          this.page.title = '大数据的下半场，产业互联网的数据平台怎么玩？';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://maxavier.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

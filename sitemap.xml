@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://blog.daas.ai/2018/12/20/GITC_the-data-platform-of-the-industrial-Internet/</loc>
+    
+    <lastmod>2018-12-24T12:19:47.198Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://blog.daas.ai/2018/12/10/Analysis%20of%20Optimistic%20Lock%20Implementation%20(MVCC)%20in%20MYSQL/</loc>
     
     <lastmod>2018-12-10T14:43:11.199Z</lastmod>
